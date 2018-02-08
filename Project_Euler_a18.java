@@ -2,6 +2,7 @@ public class Project_Euler_a18
 {
 	public static int totalMax = 0;
 	public static int count = 0;
+	public static int index = 0;
 	public static void getMax(int depth, int index, int max, int[][] triangle)
 	{
 		if(depth == triangle.length)
@@ -14,6 +15,22 @@ public class Project_Euler_a18
 		getMax(depth + 1, index, max + triangle[depth][index], triangle);
 		getMax(depth + 1, index + 1, max + triangle[depth][index], triangle);
 	}
+
+	public static int subTriangleSum(int[][] triangle, int row, int index)
+	{
+		int sum = 0;
+		int forward = 1;
+		for(int i = row; i < triangle.length; i++)
+		{
+			for(int j = index; j < index + forward; j++)
+			{
+				sum += triangle[i][j];
+			}
+			forward++;
+		}
+		return sum;
+	}
+
 	public static void main(String[] args)
 	{
            int[][] triangle = {{75},
@@ -31,6 +48,14 @@ public class Project_Euler_a18
 	      {91,71,52,38,17,14,91,43,58,50,27,29,48},
 	     {63,66,4,68,89,53,67,30,73,16,69,87,40,31},
 	    {4,62,98,27,23,9,70,98,73,93,38,53,60,4,23}};
+
+	   int[][] tri = {{56},
+		   	{3,44},
+		      {56,45,21},
+		    {34,91,15,56},
+		   {4,7,34,35,31},
+		  {67,4,5,32,45,89},
+		  {17,3,12,34,54,6,7}};
 
 		int spaces = triangle.length*4 - 1;
 
@@ -50,11 +75,43 @@ public class Project_Euler_a18
 				}
 				evenTracker++;
 			}
-			System.out.println();
+			System.out.println("\n");
 		}
+		System.out.println("************************************************************");
 
 		getMax(0,0,0,triangle);
-		System.out.println("\nThe maximum path sum for the above triangle is "+totalMax);
+		int trueTotal = totalMax;
+
+		totalMax = triangle[0][0];
+		for(int i = 1; i < triangle.length; i++)
+		{
+			int left = 0;
+			int right = 0;
+			int row = i;
+			int col = index;
+			while(row < triangle.length)
+			{
+				left += subTriangleSum(triangle,row,col);
+				right += subTriangleSum(triangle,row,col + 1);
+
+				row += 2;
+				col += 1;
+			}
+			System.out.println("Left is: "+left+"\tRight is: "+right);
+
+			if(left > right) 
+			{
+				System.out.println("Choosing: "+triangle[i][index]+"\n");
+				totalMax += triangle[i][index];
+			}
+			else 
+			{
+				System.out.println("Choosing: "+triangle[i][index+1]+"\n");
+				totalMax += triangle[i][++index];
+			}
+
+		}
+		System.out.println("The attempted max sum is "+totalMax);
+		System.out.println("The true maximum path sum for the above triangle is "+trueTotal);
 	}
 }
-
