@@ -99,16 +99,7 @@ public class Project_Euler_a61
 						existingIndexes[currentIndex] = i;
 						polys[currentIndex] = targetNumber;
 						int retval = getOrder(lists,currentIndex + 1, existingIndexes, polys, targetNumber, sum + targetNumber);
-						if(retval > 0)
-						{
-							if(currentIndex == 1)
-							{
-								System.out.print("The ordered set is: ");
-								for(int k = 0; k < polys.length; k++) System.out.print(polys[k]+" ");
-								System.out.println();
-							}
-							return retval;
-						}
+						if(retval > 0) return retval;
 					}
 				}
 				existingIndexes[currentIndex] = 0;
@@ -131,7 +122,12 @@ public class Project_Euler_a61
 		{
 			polys[0] = P3[i];
 			int possibleSolution = getOrder(lists,1,existingIndexes,polys,polys[0],polys[0]);
-			if(possibleSolution > 0) System.out.println("The sum of the set is "+possibleSolution+".");
+			if(possibleSolution > 0)
+			{
+				System.out.print("The ordered set is: ");
+				for(int j = 0; j < polys.length; j++) System.out.print(polys[j]+" ");
+				System.out.println("\nThe sum of the set is "+possibleSolution+".");
+			}
 		}
 	}
 }
