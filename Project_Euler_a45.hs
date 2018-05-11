@@ -21,10 +21,9 @@ hex n = v : hex (n+1)
 
 
 main = do
-       let b = 100000
-       let t = take b $ tri 1
-       let p = take b $ pen 1
-       let h = take b $ hex 1
+       let t = take 100000 $ tri 1
+       let p = takeWhile (<= last t) $ pen 1
+       let h = takeWhile (<= last p) $ hex 1
        let c = common t p
        let cc = common h c
        let sol = head $ dropWhile (<=40755) cc
