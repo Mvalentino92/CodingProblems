@@ -41,11 +41,15 @@ public class Project_Euler_d301
 		return table;
 	}
 
-	//Function that grabs this combo of numbers place on the lexographic table
+	/*Function that grabs this combo of numbers place on the lexographic table.
+	 * Returns 0, if there is a zero term in the heap set because the table does not
+	 * support terms with 0.*/
 	public static int getIndex(int[] arr, int[] current)
 	{
-		int index = arr[1]*arr[2]*(current[0] - 1) + arr[2]*(current[1] - 1) + current[2];
-		return index > -1 ? index : 0;
+		int index = 0;
+		if(current[0] == 0 || current[1] == 0 || current[2] == 0) return index;
+		else index = arr[1]*arr[2]*(current[0] - 1) + arr[2]*(current[1] - 1) + current[2];
+		return index;
 	}
 
 	//Function that checks to see if there are duplicates and a non-zero term.
@@ -65,7 +69,7 @@ public class Project_Euler_d301
 		return false;
 	}
 
-	//Function that deep clones an array
+	//Function that deep clones an array, and then replaces the changed value for this turn.
 	public static int[] change(int[] nums,int index,int newNumber)
 	{
 		int length = nums.length;
