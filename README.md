@@ -6,7 +6,7 @@ I've messed around before, and solved random problems (Even before I made my acc
 
 ## Problems Solved:
 **Total - 87**
-<br>**Saved as code - 78**
+<br>**Saved as code - 80**
 
 ## Notable Attempts:
 
