@@ -5,8 +5,8 @@ Here I'll test my problem solving skills by taking on Project Euler problem in v
 I've messed around before, and solved random problems (Even before I made my account), but now I'll actually track my progress and save my files!
 
 ## Problems Solved:
-**Total - 95**
-<br>**Saved as code - 89**
+**Total - 96**
+<br>**Saved as code - 90**
 
 ## Notable Attempts:
 
