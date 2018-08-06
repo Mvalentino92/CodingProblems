@@ -38,7 +38,6 @@ public class Project_Euler_a77
 				table[value] += 1;
 				stacks[stackIndex++] = prime;
 			}
-			if(value == n) table[value]++;
 			if(stackIndex - 2 < 0) break;
 			value -= stacks[--stackIndex];
 			prime = -1;
@@ -58,13 +57,14 @@ public class Project_Euler_a77
 				if(prime > -1) break;
 			}
 		}
-		for(int i = 0; i <= n; i++)
+		for(int i = 0; i <= n; i++) 
 		{
-			if(table[i] > 5000) 
+			if(table[i] > 5000)
 			{
-				System.out.println(i);
+				System.out.println(i+": "+table[i]);
 				break;
 			}
 		}
+		System.out.println(n+": "+table[n]);
 	}
 }
