@@ -68,7 +68,7 @@ public class Project_Euler_c265
 		return true;
 	}
 	
-
+	//Returns a list of the new candidates, the candidate list, minus the inbetweeners.
 	public static int[][] getNewCandidates(int n, int[][] candidates, int[][] inbetweeners,int indexOfSolution)
 	{
 		int minus = (n - 1);
@@ -118,6 +118,7 @@ public class Project_Euler_c265
 		return inbetweens;
 	}
 
+	//Takes the solution array, arranges the zero's in front, and then calculates the number from it's binary representation.
 	public static int getNumber(int n, int[] binary)
 	{
 		//Rearrange the array with the zeros in front.
@@ -153,7 +154,7 @@ public class Project_Euler_c265
 		return retval;
 	}
 		
-						        //solution must be 2^n + 1 length
+	//The recursive function that will find all solutions.
 	public static void generateSolutions(int n, int[][] candidates, int[] solutions, int indexOfSolution)
 	{
 		/*If candidates length is equal to (n - 2), then that means the last sticker was thrown on.
