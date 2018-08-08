@@ -168,12 +168,13 @@ public class Project_Euler_c265
 			if(solutions[0] != solutions[solutions.length-1]) return;
 			else
 			{
-				//Get the final inbetweener matrix to check against the remaining candidates.
+				//Cut off the last repeat of solution matrix, and construct an array to store the last
+				//"full circle" numbers to generate inbetweeners.
 				int[] finalCheck = new int[(n-2) + (n-1)];
 				int[] finalSolutions = new int[solutions.length - 1];
 				for(int i = 0; i < finalSolutions.length; i++) finalSolutions[i] = solutions[i];
 
-				//Changed n-2 to n-3
+				//Populate this final check matrix
 				int indexToStart = 0;
 				for(int i = indexOfSolution - (n-1), j = 0; i < finalSolutions.length; i++, j++) 
 				{
@@ -182,19 +183,18 @@ public class Project_Euler_c265
 				}
 				for(int i = indexToStart, j = 0; i < finalCheck.length; i++, j++) finalCheck[i] = finalSolutions[j];
 
+				//Prep and populate the final inbetweeners matrix, and poppulate.
 				int[][] finalInbetweeners = new int[n-2][n];
 				for(int i = 0; i < n - 2; i++)
 				{
 					for(int j = 0, k = i; j < n; j++, k++) finalInbetweeners[i][j] = finalCheck[k];
 				}
 
+				//Check if it's good! Return if either fail.
 				if(!uniqueInbetweeners(finalInbetweeners)) return;
 				if(!containsCandidatesOnly(candidates,finalInbetweeners)) return;
 
-				//for(int i = 0; i < finalSolutions.length; i++) System.out.print(finalSolutions[i]+" ");
-				//System.out.println();
-
-				//Finally, convert it to binary, and be done with it!
+				//Finally, convert it to binary, and store it.
 				int number = getNumber(n,finalSolutions);
 				solution.add(number);
 				return;
@@ -261,17 +261,19 @@ public class Project_Euler_c265
 		int[][] candidates = binaryLex(n);
 		int[] solutions = new int[combos+1];
 		generateSolutions(n,candidates,solutions,0);
+		Collections.sort(solution);
 		long total = 0;
 		for(int i = 0; i < solution.size(); i++)
 		{
-			total += solution.get(i);
-			for(int j = i + 1; j < solution.size(); j++)
+			int toAdd = solution.get(i);
+			total += toAdd;
+			int index = i + 1;
+			while(index < solution.size())
 			{
-				if(solution.get(i).equals(solution.get(j))) 
-				{
-					solution.set(j,0);
-				}
+				if(solution.get(index) == toAdd) index++;
+				else break;
 			}
+			i = index;
 		}
 		System.out.println(total);
 	}
