@@ -56,4 +56,4 @@ for i in Tens
 	end
 end
 
-total += 11
+total -= 11
