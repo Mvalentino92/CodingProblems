@@ -82,7 +82,6 @@ for i = 1:2500
 			if mat[row][col] == 0
 				candidates[row] = 0
 			else
-				candidates[row] = 1
 				#Compare for maxLarge
 				if mat[row][col] > maxLarge maxLarge = mat[row][col] end
 
@@ -92,14 +91,14 @@ for i = 1:2500
 				if currentSmall < maxSmaller maxSmaller = currentSmall end
 
 				#Initialize the candidate array with starting values.
-				candidates[row] = (1-largeScale[row])/currentSmall
+				candidates[row] = (1-largeScale[col])/currentSmall
 			end
 		end
 
 		#Populate candidate matrix with scores
 		for j = 1:n
 			candidates[j] *= maxSmaller
-			candidates[j] +=  mat[j][col]*largeScale[j]/maxLarge
+			candidates[j] +=  mat[j][col]*largeScale[col]/maxLarge
 		end
 
 		#Find the index of the max score, and zero out all the elements in that column and row, and add this value to total
