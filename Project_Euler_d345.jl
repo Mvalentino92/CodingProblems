@@ -64,7 +64,7 @@ n = 15
 candidates = zeros(n)
 
 #Run the algorithm many times
-for i = 1:2500
+for i = 1:35000
 	mat = deepcopy(perm)
 	order = randomArray(n)
 	largeScale = getScaling(n,1/3,2/3)
