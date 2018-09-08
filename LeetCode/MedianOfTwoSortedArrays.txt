@@ -1,0 +1,75 @@
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int lLength = nums1.length;
+        int rLength = nums2.length;
+        int total = lLength + rLength;
+        int target = total/2;
+        if(total % 2 == 1) target++;
+        
+        int lIndex = 0;
+        int rIndex = 0;
+        
+        int current = 0;
+        int currentIndex = 0;
+        
+        while(lIndex < lLength && rIndex < rLength && currentIndex < target )
+        {
+            if(nums1[lIndex] < nums2[rIndex])
+            {
+                current = nums1[lIndex];
+                lIndex++;
+                currentIndex++;
+            }
+            else
+            {
+                current = nums2[rIndex];
+                rIndex++;
+                currentIndex++;
+            }
+        }
+        
+        //Grab it we stopped because we hit the medianIndex
+        if(currentIndex == target)
+        {
+            if(total % 2 == 1) return current;
+            else
+            {
+                if(lIndex == lLength) return (nums2[rIndex] + current)/2.0;
+                else if(rIndex == rLength) return (nums1[lIndex] + current)/2.0;
+                else 
+                {
+                    int next = nums1[lIndex] < nums2[rIndex] ? nums1[lIndex] : nums2[rIndex];
+                    return (current + next)/2.0;
+                }
+            }
+        }
+        else if(lIndex == lLength)
+        {
+            while(currentIndex < target)
+            {
+                current = nums2[rIndex];
+                rIndex++;
+                currentIndex++;
+            }
+            if(total % 2 == 1) return current;
+            else
+            {
+                return (nums2[rIndex] + current)/2.0;
+            }
+        }
+        else
+        {
+            while(currentIndex < target)
+            {
+                current = nums1[lIndex];
+                lIndex++;
+                currentIndex++;
+            }
+            if(total % 2 == 1) return current;
+            else
+            {
+                return (nums1[lIndex] + current)/2.0;
+            }
+        }
+    }
+}

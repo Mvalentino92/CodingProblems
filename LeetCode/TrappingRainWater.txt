@@ -1,0 +1,51 @@
+Class Solution {
+    public int trap(int[] height) {
+        int totalRain = 0;
+        //Find the flanks: a and b (trap numbers less a)
+        for(int i = 0; i < height.length - 2; i++)
+        {
+            int a;
+            int b;
+            int length;
+            if(height[i+1] < height[i])
+            {
+                a = height[i];
+                int j = 0;
+                int max = height[i+1];
+                int maxIndex = i+1;
+                int maxHolder = max;
+                for(j = i + 1; j < height.length; j++)
+                {
+                    //While numbers are less than a, find the max.
+                    //if the max is equal to or greater than a, thats fine
+                    if(height[j] > max)
+                    {
+                        max = height[j];
+                        maxIndex = j;
+                    }
+                    if(height[j] >= a) break;
+                }
+                //Check if we ran out first.
+                if(max == maxHolder) continue;
+                else
+                {
+                    //Calculate the rain here
+                    b = max;
+                    int h = a <= b ? a : b;
+                    System.out.println(i+" "+maxIndex+" "+a+" "+b+" "+h);
+                    int sq = h*(maxIndex - i + 1);
+                    
+                    //Level out first, to avoid overhang.
+                    int flankSum = a < b ? 2*a : 2*b;
+                    
+                    //Get the rest of the numbers inbetween.
+                    for(int k = i + 1; k < maxIndex; k++) flankSum += height[k];
+                    System.out.println("sq: "+sq+"\tflank: "+flankSum);
+                    totalRain += (sq - flankSum);
+                    i = maxIndex - 1;
+                }
+            }
+        }
+        return totalRain;
+    }
+}

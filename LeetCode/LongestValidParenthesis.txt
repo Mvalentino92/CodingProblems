@@ -1,0 +1,68 @@
+ass Solution {
+    public int longestValidParentheses(String s) {
+         //Init the zero array
+                int[] numbers = new int[s.length()];
+
+                //Poppulate it with 1's.
+                for(int i = 0; i < s.length()-1; i++)
+                {
+                        if(s.charAt(i) == '(' && s.charAt(i+1) == ')')
+                        {
+                                numbers[i] = 1;
+                                numbers[i+1] = 1;
+                        }
+                }
+                //for(int i = 0; i < numbers.length; i++) System.out.print(numbers[i]+" ");
+                //System.out.println();
+
+                //Set the current, and next highest variables.
+                int current = 1;
+                int temp = current;
+                int next = 2;
+
+                //Check for flanking the current number with next.
+                while(true)
+                {
+                        boolean changed = false;
+                        for(int i = 0; i < numbers.length - 1; i++)
+                        {
+                                if(numbers[i] == 0 && numbers[i+1] > 0)
+                                {
+                                        //Check if theres a flanking zero to match.
+                                        for(int j = i + 1; j < numbers.length; j++)
+                                        {
+                                                if(numbers[j] == 0)
+                                                {
+                                                        //Check if the flanks are opposite
+                                                        if(s.charAt(i) == '(' && s.charAt(j) == ')')
+                                                        {
+                                                                //Change these to the next and update temp
+                                                                numbers[i] = 1;
+                                                                numbers[j] = 1;
+                                                                changed = true;
+                                                        }
+                                                        break;
+                                                }
+                                        }
+                                }
+                        }
+                        //If you didn't update at all, then stop.
+                        if(!changed) break;
+                }
+
+                //Now check for the longest sequence of numbers greater than 0.
+                int max = 0;
+                for(int i = 0; i < numbers.length; i++)
+                {
+                        if(numbers[i] == 0) continue;
+                        int currentMax = 1;
+                        for(int j = i + 1; j < numbers.length; j++)
+                        {
+                                if(numbers[j] > 0) currentMax++;
+                                else break;
+                        }
+                        if(currentMax > max) max = currentMax;
+                }
+                return max;
+    }
+}

@@ -1,0 +1,62 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) { 
+        
+        ListNode[] myList = new ListNode[25000];
+        for(int i = 0; i < myList.length; i++) myList[i] = new ListNode(0);
+        if(lists.length == 0) return null;
+        int index = 0;
+       while(true)
+       {
+           int nullCount = 0;
+           //Find the first non null to get a min.
+           int min = 0;
+           int minDex = 0;
+           for(int i = 0; i < lists.length; i++)
+           {
+               if(lists[i] == null) nullCount++;
+                   
+               else
+               {
+                   min = lists[i].val;
+                   minDex = i;
+                   break;
+               }
+                   
+           }
+           //Check to see if your all done before you start!
+           if(nullCount == lists.length) break;
+           //Otherwise, find the min
+           else
+           {
+               //Find the min
+               for(int i = minDex + 1; i < lists.length; i++)
+               {
+                   if(lists[i] == null) continue;
+                   else
+                   {
+                       if(lists[i].val < min)
+                       {
+                           min = lists[i].val;
+                           minDex = i;
+                       }
+                   }
+               }
+               //Now add the min to our list, and go up a chain for the list it came from.
+               myList[index].val = min;
+               myList[index].next = myList[++index];
+               lists[minDex] = (lists[minDex].next);
+           }
+       }
+        if(index-1 == -1) return null;
+        myList[index-1].next = null;
+    return myList[0];
+    }
+}

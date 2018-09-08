@@ -1,0 +1,90 @@
+import java.util.*;
+import java.lang.*;
+/**
+ * Definition for a point.
+ * class Point {
+ *     int x;
+ *     int y;
+ *     Point() { x = 0; y = 0; }
+ *     Point(int a, int b) { x = a; y = b; }
+ * }
+ */
+
+class Solution {
+    public int maxPoints(Point[] points) {
+        if(points.length == 1) return 1;
+        int maxLine = 0;
+        Integer v = 0;
+        int x = 0;
+        int y = 0;
+        String m = "";
+        Hashtable<String,Integer> slopes = new Hashtable<>();
+        for(int i = 0; i < points.length - 1; i++)
+        {
+            //Clear the hashtable, grab the current points.
+            slopes.clear();
+            int x0 = points[i].x;
+            int y0 = points[i].y;
+            int duplicates = 0;
+            int maxA = 1;
+            int maxB = 1;
+            for(int j = i + 1; j < points.length; j++)
+            {
+                if(points[j].x == x0 && points[j].y == y0)
+                {
+                    duplicates += 1;
+                    continue;
+                }
+                if(points[j].x == x0)
+                {
+                    maxB += 1;
+                    continue;
+                }
+                if(points[j].y == y0)
+                {
+                    maxA += 1;
+                    continue;
+                }
+                x = points[j].x - x0;
+                y = points[j].y - y0;
+                
+                //Gererate simplified slope for these two points.
+                m = gcd(y,x);
+                
+                //If it already contains this slope, add to it's value.
+                if(slopes.containsKey(m)) slopes.replace(m,slopes.get(m)+1);
+                
+                //If not, create this key and set val to 2
+                else slopes.put(m,2);
+            }
+            if(duplicates > 0) maxLine = (duplicates+1) > maxLine ? (duplicates + 1) : maxLine;
+            if(maxA > maxLine) maxLine = maxA;
+            if(maxB > maxLine) maxLine = maxB;
+            //Iterate the values and find the max one. Check if it's greater than current max.
+            Set<String> keys = slopes.keySet();
+            for(String key : keys)
+            {
+                //System.out.println(slopes.get(key));
+                v = slopes.get(key) + duplicates;
+                if(v.compareTo(maxLine) > 0) maxLine = v;
+            }
+        }
+        return maxLine;
+    }
+    
+    public static String gcd(int x, int y)
+    {
+            if(x == 0 || y == 0) return ""+x+y;
+            int q = x;
+            int p = y;
+
+            while(q != 0)
+            {
+                    int temp = p;
+                    p = q;
+                    q = temp % q;
+            }
+            return ""+(x/p)+(y/p);
+    }
+
+}
