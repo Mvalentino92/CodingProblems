@@ -18,4 +18,4 @@ It is hard for me to say what I was wrong about, as parts of the algorithm were 
 # LeetCode
 Only doing the Hard problems. I wanted practice solving these types of problems.
 
-## Problems Solved: 6
+## Problems Solved: 7
