@@ -1,0 +1,67 @@
+class Solution {
+    public int findRotateSteps(String ring, String key) {
+            //Init the length of the ring.
+                int l = ring.length();
+
+                //Init the table [index,totaldistance]
+                int[][] table = new int[l][2];
+
+                //Init the current length of index's (is 1)
+                int currentIndexBound = 1;
+
+                //Begin to iterate the keys and update table with optimal values
+                for(int i = 0; i < key.length(); i++)
+                {
+                        /*Iterate and find all occurances of the current key in the ring and do the following:
+                         * Assume this occurance in the ring is the best.
+                         * Find the optimal distance to this occurance from the current indexs total distance.
+                         * Add this to the ArrayList*/
+                        char currentKey = key.charAt(i);
+                        ArrayList<int[]> nextValues = new ArrayList<>();
+                        for(int j = 0; j < ring.length(); j++)
+                        {
+                                //Find the best total distance to this "current Best key character"
+                                if(ring.charAt(j) == currentKey)
+                                {
+                                        //Declare initial min
+                                        int c = table[0][0];
+                                        int direct = j < c ? c - j : j - c;
+                                        int around = j < c ? (l - c) + j : (l - j) + c;
+                                        int min = direct < around ? direct : around;
+                                        min += table[0][1] + 1;
+                                        int currentMin = 0;
+                                        
+                                        //Iterate the length of the current index finding the mins
+                                        for(int k = 1; k < currentIndexBound; k++)
+                                        {
+                                                c = table[k][0];
+                                                direct = j < c ? c - j : j - c;
+                                                around = j < c ? (l - c) + j : (l - j) + c;
+                                                currentMin = direct < around ? direct : around;
+                                                currentMin += table[k][1] + 1;
+
+                                                //Check if the we have a new min distance to this current best
+                                                if(currentMin < min) min = currentMin;
+                                        }
+                                        //Update the ArrayList that holds the next values.
+                                        int[] toAdd = {j,min};
+                                        nextValues.add(toAdd);
+                                }
+                        }
+                        //Update the table, and the indexOf currentIndexBound (length of arrayList).
+                        System.out.println(nextValues.size());
+                        for(int j = 0; j < nextValues.size(); j++)
+                        {
+                                table[j][0] = nextValues.get(j)[0];
+                                table[j][1] = nextValues.get(j)[1];
+                        }
+                        currentIndexBound = nextValues.size();
+                }
+                //Finally grab the min from this final table.
+                int totalDistance = table[0][1];
+                for(int i = 1; i < currentIndexBound; i++) totalDistance = table[i][1] < totalDistance 
+                                                                           ? table[i][1] : totalDistance;
+                //Return this value
+                return totalDistance;
+    }
+}
