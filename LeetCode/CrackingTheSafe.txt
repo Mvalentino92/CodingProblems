@@ -1,0 +1,150 @@
+import java.util.*; 
+import java.math.*; 
+import java.io.*; 
+
+class Tree
+{
+	//Field variables
+	String val;
+	Tree[] children;
+	Tree parent;
+
+	//Constructor
+	public Tree(String val, int children,Tree parent)
+	{
+		this.val = val;
+		this.children = new Tree[children];
+		this.parent = parent;
+	}
+
+	//Make the children (fill their values)
+	void makeChildren()
+	{
+		String chop = "";
+		for(int i = 0; i < children.length; i++)
+		{
+			chop = val.substring(1,val.length());
+			chop += i;
+			children[i] = new Tree(chop,children.length,this);
+		}
+	}
+
+	//Print the children
+	void printChildren()
+	{
+		for(int i = 0; i < children.length; i++)
+		{
+			System.out.print(children[i].val+" ");
+		}
+		System.out.println();
+	}
+
+	//Print the parent
+	void printParent()
+	{
+		System.out.println(this.parent);
+	}
+	
+	//Return the parent
+	Tree getParent()
+	{
+		return this.parent;
+	}
+}
+
+public class tree
+{
+	public static String crackCombo(int n, int k)
+	{
+		//Generate the starting String value of all zero's
+		String start = "";
+		for(int i = 0; i < n; i++) start += 0;
+
+		//Create the count variable, and the array that will hold the indexes of the depths
+		int size = (int)(Math.pow(k,n));
+		int[] indexes = new int[size];
+		int count = 1;
+
+		//Create the root node, and load up the stack with the start String
+		Tree root = new Tree(start,k,null);
+		root.makeChildren();
+		Stack<String> s = new Stack<>();
+		s.push(start);
+
+		//Pointer to the current node
+		Tree currentNode = root;
+
+		//Begin to iterate down the tree and find the combination
+		while(count != size)
+		{
+			System.out.println(count);
+			int i;
+			boolean foundChildren = false;
+			for(i = indexes[count]; i < k; i++)
+			{
+				/*If this child is not in the stack already,
+				 * Add it to the stack, update the index of count to (i+1),
+				 * update count++, and check foundChildren = true,
+				 * and change currentNode = currentNode.children[i], and make children then break*/
+				if(s.search(currentNode.children[i].val) == -1)
+				{
+					s.push(currentNode.children[i].val);
+					indexes[count++] = i+1;
+					foundChildren = true;
+					currentNode = currentNode.children[i];
+					currentNode.makeChildren();
+					break;
+				}
+			}
+
+			/*Now, we got here for two reasons.
+			 * 1) We found a child, and changed the current node already,
+			 * 2) We didn't find any children and need to recur up
+			 * If 1 happened, just continue, but if 2 happened
+			 * We need to pop a value from the stack,
+			 * 0 out the indexes[count], then minus 1 from count.
+			 * and currentNode = currentNode.parent*/
+			if(!foundChildren)
+			{
+				s.pop();
+				indexes[count] = 0;
+				count--;
+				currentNode = currentNode.parent;
+			}
+		}
+
+		//Return the final String
+		Iterator<String> iter = s.iterator();
+		String retval = start.substring(0,start.length()-1);
+		while(iter.hasNext())
+		{
+			String next = iter.next();
+			System.out.println(next);
+			int length = next.length()-1;
+			retval += next.charAt(length);
+		}
+
+		return retval;
+	}
+
+	public static void main(String[] args)
+	{
+		/*Tree root = new Tree("000",2,null);
+		root.printParent();
+		root.makeChildren();
+		root.printChildren();
+		Tree next = root.children[1];
+		next.makeChildren();
+		next.printChildren();
+		Tree parent = next.getParent();
+		System.out.println(parent.val);
+		Stack<String> s = new Stack<>();
+		s.push("hey");
+		s.push("you");
+		System.out.println(s.search("hey"));
+		System.out.println(s.search("het"));*/
+		String code = crackCombo(3,2);
+		System.out.println(code);
+
+	}
+}
