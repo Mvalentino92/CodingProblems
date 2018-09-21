@@ -1,0 +1,71 @@
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        if(matrix.length == 0) return 0;
+        //Create the matrix
+        int[][] mat = new int[matrix.length][matrix[0].length];
+        for(int i = 0; i < matrix.length; i++)
+        {
+            for(int j = 0; j < matrix[0].length; j++)
+            {
+                mat[i][j] = matrix[i][j] - '0';
+            }
+        }
+        
+        //Set max
+        int max = 0;
+        for(int i = 0; i < mat[0].length; i++)
+        {
+            if(mat[0][i] == 1)
+            {
+                int current = 1;
+                int j;
+                for(j = i + 1; j < mat[0].length; j++)
+                {
+                    if(mat[0][j] == 1) current++;
+                    else break;
+                }
+                if(current > max) max = current;
+                i = j - 1;
+            }
+        }
+        
+        //Build the matrix up and find max rectangle
+        for(int i = 1; i < mat.length; i++)
+        {
+            for(int j = 0; j < mat[0].length; j++)
+            {
+                mat[i][j] += mat[i-1][j]*mat[i][j];
+            }
+            
+            //Now iterate this row and find the max value you can get from it
+            for(int j = 0; j < mat[0].length; j++)
+            {
+                int val = mat[i][j];
+                if(val == 0) continue;
+                int count = 1;
+                boolean hitVal = false;
+                for(int k = 0; k < mat[0].length; k++)
+                {
+                    if(j == k) 
+                    {
+                        hitVal = true;
+                        continue;
+                    }
+                    if(mat[i][k] >= val) count++;
+                    else
+                    {
+                        if(hitVal) break;
+                        else
+                        {
+                            count = 1;
+                        }
+                    }
+                }
+                if(!hitVal) continue;
+                int currentVal = val*count;
+                if(currentVal > max) max = currentVal;
+            }
+        }
+        return max;
+    }
+}
