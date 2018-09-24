@@ -1,0 +1,74 @@
+import java.util.*;
+class Envelope
+{
+    int length;
+    int width;
+    int max;
+    
+    public Envelope(int length, int width)
+    {
+        this.length = length;
+        this.width = width;
+    }
+}
+class Solution {
+    public int findMax(ArrayList<Envelope> e,Hashtable<Envelope,ArrayList<Envelope>> envs)
+    {
+        int max = 0;
+        for(int i = 0; i < e.size(); i++)
+        {
+            //Check to see if a max exists for this already
+            if(e.get(i).max > 0)
+            {
+                //Check to see if it's greater than max
+                if(e.get(i).max > max) max = e.get(i).max;
+            }
+            else
+            {
+                e.get(i).max = findMax(envs.get(e.get(i)),envs); //Maybe not plus 1?
+                //Check to see if greater than max
+                if(e.get(i).max > max) max = e.get(i).max;
+            }
+        }
+        return max + 1;
+    }
+    public int maxEnvelopes(int[][] envelopes) {
+        if(envelopes.length == 0) return 0;
+        //Create hashtable (first get all Envelope objects, all need to point to same object)
+        Hashtable<Envelope,ArrayList<Envelope>> envs = new Hashtable<>();
+        Envelope[] temp = new Envelope[envelopes.length];
+        for(int i = 0; i < envelopes.length; i++)
+        {
+            temp[i] = new Envelope(envelopes[i][0],envelopes[i][1]);
+        }
+        
+        //Add to hashtable
+        for(int i = 0; i < temp.length; i++)
+        {
+            //Find the ones that this one can fit inside add it to arrayList
+            ArrayList<Envelope> fit = new ArrayList<>();
+            for(int j = 0; j < temp.length; j++)
+            {
+                //If it can fit, add this to arrayList
+                if(temp[j].length < temp[i].length && temp[j].width < temp[i].width)
+                {
+                    fit.add(temp[j]);
+                }
+            }
+            
+            //Add this Entry to the hashtable, do base cases too
+            if(fit.size() == 0) temp[i].max = 1;
+            envs.put(temp[i],fit);
+        }
+        
+        //Now iterate the hashtable and find the max using Findmax
+        int retval = 0;
+        Set<Envelope> keys = envs.keySet();
+        for(Envelope key : keys)
+        {
+            int current = findMax(envs.get(key),envs);
+            if(current > retval) retval = current;
+        }
+        return retval;
+    }
+}
