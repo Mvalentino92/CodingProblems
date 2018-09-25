@@ -1,0 +1,87 @@
+class Solution {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+           //Create the ArrayList that will store the result Strings.
+                ArrayList<String> retval = new ArrayList<>();
+
+                /*Begin to iterate the String array, and track how many words we
+                 * can jam into one sentence of maxWidth. Remember, there has to at least
+                 * be one space between each word by default, so track this with a
+                 * minSpace variable*/
+                int index = 0;
+                while(index < words.length)
+                {
+                        //Initialze the current sentence variable,minspace, and total wordSpace
+                        String current = "";
+                        int minSpace = 0;
+                        int wordSpace = 0;
+                        int wordCount = 0;
+                        int i;
+                        for(i = index; i < words.length; i++)
+                        {
+                                //Check to see if this word can fit, if so add it.
+                            if(wordSpace + words[i].length() + (minSpace + 1) < maxWidth
+                                        || wordSpace + words[i].length() + (minSpace) <= maxWidth)
+                                {
+                                        wordSpace += words[i].length();
+                                        wordCount += 1;
+                                        minSpace += 1;
+                                }
+                                //If not, create our next sentence to store (the words are from index < i)
+                                else break;
+                        }
+                        /*If this is the last word form words,
+                         * Then we have to left justify it instead
+                         * And fill the end with spaces*/
+                        if(i == words.length)
+                        {
+                                for(int j = index; j < i; j++)
+                                {
+                                        current += words[j];
+                                        if(current.length() < maxWidth) current += " ";
+                                }
+                                //Fill end with spaces
+                                for(int j = current.length(); j < maxWidth; j++)
+                                {
+                                        current += " ";
+                                }
+                        }
+                        //Otherwise we have to full justify and space it out properly.
+                        else
+                        {
+                                //Get the spacing between words and overflow remainder for some
+                                int spacing,remainder;
+                                if(wordCount == 1)
+                                {
+                                        spacing = maxWidth - wordSpace;
+                                        remainder = 0;
+                                }
+                                else
+                                {
+                                        spacing = (maxWidth-wordSpace)/(wordCount - 1);
+                                        remainder = (maxWidth-wordSpace) % (wordCount - 1);
+                                }
+                                /*Iterate and add the words plus spaces,
+                                 * and add the remainder if necessary*/
+                                for(int j = index; j < i-1; j++)
+                                {
+                                        current += words[j];
+                                        for(int k = 0; k < spacing; k++) current += " ";
+                                        if(remainder-- > 0) current += " ";
+                                }
+                                current += words[i-1];
+                                if(current.length() < maxWidth)
+                                {
+                                        for(int j = current.length(); j < maxWidth; j++)
+        				{
+                                                current += " ";
+                                        }
+                                }
+
+                        }
+                        //make index = i and break
+                        retval.add(current);
+                        index = i;
+                }
+                return retval;
+    }
+} 
