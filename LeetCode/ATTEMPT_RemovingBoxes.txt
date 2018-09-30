@@ -1,0 +1,108 @@
+import java.util.*;
+/*Create a Box class just to hold information about Boxes*/
+class Box
+{
+    public int number;
+    public int count;
+    
+    public Box(int number, int count)
+    {
+        this.number = number;
+        this.count = count;
+    }
+}
+
+class Solution {
+    /*Returns an ArrayList<Box> containing condensed
+     * information about the initial array of boxes*/
+    public ArrayList<Box> condense(int[] boxes)
+    {
+        ArrayList<Box> retval = new ArrayList<Box>();
+        int i;
+        for(i = 0; i < boxes.length; i++)
+        {
+            int current = boxes[i];
+            int count = 1;
+            int j;
+            for(j = i + 1; j < boxes.length; j++)
+            {
+                if(boxes[i] != boxes[j]) break;
+                else count++;
+            }
+            retval.add(new Box(boxes[i],count));
+            i = j - 1;
+        }
+        return retval;
+    }
+    
+    /*Will return the index of the next occurance of the specified box,
+     * that occurs after the index supplied and it within the bounds of the end index.
+     * Otherwise, return -1*/
+    public int getNext(ArrayList<Box> cBoxes, int target, int start, int end)
+    {
+        for(int i = start; i <= end; i++)
+        {
+            if(cBoxes.get(i).number == target) return i;
+        }
+        return -1;
+    }
+    
+    /*The recursive method that will calculate the max total possible
+     * Start AT start, and end up to AND INCLUDING end*/
+    public int findMax(ArrayList<Box> cBoxes, int start, int end)
+    {
+        if(end < start) return 0;
+        if(start == end) return cBoxes.get(start).count*cBoxes.get(start).count;
+        if(table[start][end] > 0) return table[start][end];
+        
+        //Set the max variable
+        int max = 0;
+        
+        //Create a HashSet of all the viable boxes between these bounds
+        HashSet<Integer> present = new HashSet<>();
+        for(int i = start; i <= end; i++) present.add(cBoxes.get(i).number);
+        
+        /*Now iterate the HashSet, and calculate the current max for each box (number)*/
+        for(Integer number : present)
+        {
+            //Start the indexes, and occur to be squared
+            int occur = 0;
+            int total = 0;
+            int currentIndex = start;
+            int nextIndex = getNext(cBoxes,number,currentIndex,end);
+            
+            while(nextIndex != -1)
+            {
+                //Add to total, and recur method for the space btween indexes
+                occur += cBoxes.get(nextIndex).count;
+                total += findMax(cBoxes,currentIndex,nextIndex-1);
+                currentIndex = nextIndex+1;
+                nextIndex = getNext(cBoxes,number,currentIndex,end);
+            }
+            //Finally, grab the rest
+            total += findMax(cBoxes,currentIndex,end);
+            
+            //Add finally occur to total
+            total += occur*occur;
+            
+            //Check if total is larger that current max
+            if(total >= max) max = total;
+        }
+        
+        //Return the max;
+        table[start][end] = max;
+        return max;
+    }
+    
+    public static int[][] table = new int[100][100];
+    public int removeBoxes(int[] boxes) { 
+        //Create the condensed ArrayList<Box>
+        ArrayList<Box> cBoxes = condense(boxes);
+        
+        for(int i = 0; i < table.length; i++)
+        {
+            for(int j = 0; j < table.length; j++) table[i][j] = 0;
+        }
+        return findMax(cBoxes,0,cBoxes.size()-1);
+    }
+}
