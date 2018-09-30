@@ -1,0 +1,64 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        //Create an array of lenght k, to hold the nodes we have to swap
+        ListNode[] hold = new ListNode[k];
+        int strides;
+        boolean isHead = true;
+        ListNode retHead = null;
+        ListNode retTail = null;
+        
+        //Iterate the list in clips of k, and add these nodes to the array.
+        while(head != null)
+        {
+            strides = 0;
+            for(int i = 0; i < k && head != null; i++)
+            {
+                hold[i] = new ListNode(head.val);
+                head = head.next;
+                strides++;
+            }
+            
+            /*If strides equal k, this is a complete cycle, so reverse and then link
+             * otherwise, its the cutoff, so just link without reversing.*/
+            if(strides == k)
+            {
+                //Check to see if this is beginning
+                if(isHead) 
+                {
+                    retHead = hold[k-1];
+                    isHead = false;
+                }
+                //Otherwise we have to link our last entry in retval to this first one
+                else retTail.next = hold[k-1];
+                
+                /*Now link them up*/
+                for(int i = k-1; i > 0; i--)
+                {
+                    hold[i].next = hold[i-1];
+                }
+                //Set the tail
+                retTail = hold[0];
+            }
+            else
+            {
+                //Otherwise, just add them normally
+                if(isHead)
+                {
+                    retHead = hold[0];
+                }
+                else retTail.next = hold[0];
+            
+                for(int i = 0; i < strides-1; i++) hold[i].next = hold[i+1];
+            }
+        }
+        return retHead;
+    }
+}
