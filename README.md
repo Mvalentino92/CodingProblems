@@ -19,3 +19,7 @@ It is hard for me to say what I was wrong about, as parts of the algorithm were 
 Only doing the Hard problems. I wanted practice solving these types of problems.
 
 ## Problems Solved: 12
+
+##Notable Attempts:
+
+**ATTEMPT_RemovingBoxes.txt:** I implemented a dynamic approach, that didn't address all possibilities, but those that logically made sense to be the most likely to occur. 51/60 test cases were passed. I experimented with my own inputs, (up to 100 n, like the problem), and if I didn't generate the correct solution (was correct about 1/4 of the time), there was only a 1-3% percent error from the correct solution. While I didn't solve the problem, I am still somewhat satisfied with my heuristic approach, and of course the practice earned from an honest try.
