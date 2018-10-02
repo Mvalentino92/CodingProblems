@@ -10,6 +10,11 @@ class Solution {
             int currentStone = stones[i];
             String key = ""+i+""+lastK;
             
+            if(table.containsKey(key))
+            {
+                return table.get(key) == 1 ? true : false;
+            }
+            
             //Create the matrix of viable moves [1/0,index]
             int[][] viable = new int[3][2];
             
