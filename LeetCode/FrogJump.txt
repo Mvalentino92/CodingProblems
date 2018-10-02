@@ -1,0 +1,90 @@
+import java.util.*;
+class Solution {
+    public static Hashtable<String,Integer> table = new Hashtable<>();
+    
+    public boolean canCrossRecur(int[] stones, int index, int lastK)
+    {
+        for(int i = index; i < stones.length-1; i += 0)
+        {
+            //Get current stone
+            int currentStone = stones[i];
+            String key = ""+i+""+lastK;
+            
+            //Create the matrix of viable moves [1/0,index]
+            int[][] viable = new int[3][2];
+            
+            //Iterate and check if theres viable moves ahead for any of k,k+1,or,k-1
+            for(int k = 0; k < viable.length; k++)
+            {
+                for(int j = i + 1; j < stones.length; j++)
+                {
+                    //Check if theres viable stones here
+                    if(currentStone + (lastK + (k-1)) == stones[j])
+                    {
+                        viable[k][0] = 1;
+                        viable[k][1] = j;
+                        break;
+                    }
+                    else if(currentStone + (lastK + (k-1)) < stones[j]) break;
+                }
+            }
+            
+            /*At this point, viable has 0's or 1's in the first column
+             * Pertaining to whether there was a possibility or not,
+             * with the second column representing the k possibiliy used [-1,0,k]*/
+            int viableSum = viable[0][0] + viable[1][0] + viable[2][0];
+            
+            //Check if the sum of viable is 0, if it is, return false;
+            if(viableSum == 0) 
+            {
+                table.put(key,0);
+                return false;
+            }
+            
+            /*If it's 1, then find the one that is one has 1,
+            * and set lastK equal to that k's plus lastK
+            * and set i as the index stored*/
+            if(viableSum == 1)
+            {
+                int k;
+                for(k = 0; k < viable.length; k++)
+                {
+                    if(viable[k][0] == 1) break;
+                }
+                
+                lastK = lastK + (k-1);
+                i = viable[k][1];
+            }
+            //Else that means that more than 1 were viable, so return 
+            //So loop and recur possibilites linked with or, and return the result.
+            else
+            {
+                boolean futureVerdict = false;
+                for(int k = 0; k < viable.length; k++)
+                {
+                    if(viable[k][0] == 1)
+                    {
+                        String futureKey = ""+viable[k][1]+""+(lastK + (k-1));
+                        if(table.containsKey(futureKey))
+                        {
+                            boolean verdict = table.get(futureKey) == 1 ? true : false;
+                            futureVerdict = futureVerdict || verdict;
+                        }
+                        else 
+                        { 
+                            futureVerdict = futureVerdict || canCrossRecur(stones, viable[k][1], lastK + (k-1));
+                        }
+                    }
+                }
+                if(futureVerdict) table.put(key,1);
+                else table.put(key,0);
+                return futureVerdict;
+            }
+        }
+        return true;
+    }
+    public boolean canCross(int[] stones) {
+        table.clear();
+        return canCrossRecur(stones,0,0);
+    }
+}
