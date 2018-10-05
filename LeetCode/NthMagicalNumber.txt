@@ -1,0 +1,52 @@
+import java.math.*;
+class Solution {
+    public static long gcd(long p, long q)
+    {
+        if(q == 0) return p;
+        else return gcd(q, p % q);
+    }
+    public int nthMagicalNumber(int N, int A, int B) {
+        
+        //Make b greater or equal to a.
+        long a = A <= B ? A : B;
+        long b = B > A ? B : A;
+        
+        //Return simple answer if b | a
+        if(b % a == 0) return (int)(a*N % (1000000000 + 7));
+        
+        //Compute the lcm
+        long lcm = (a*b)/gcd(a,b);
+        
+        //Declare starter positions
+        int aln = 1;
+        int arn = N;
+        
+        int bln = 1;
+        int brn = N;
+
+        //Get starting values
+        long aTotal, bTotal;
+        int amn, bmn; 
+        
+        /*Now try the middle values and use bisection method to hone in on either answer*/
+        while(true)
+        {
+            //Get middle point
+            amn = (aln + arn)/2;
+            bmn = (bln + brn)/2;
+            
+            //Calculate the current position for both a and b
+            aTotal = (amn*a)/b - (amn*a)/lcm + amn;
+            bTotal = (bmn*b)/a - (bmn*b)/lcm + bmn;
+            
+            //Check to see if they equal n
+            if(aTotal == N) return (int)(amn*a % (1000000000 + 7));
+            else if(aTotal < N) aln = amn + 1;
+            else arn = amn;
+            
+            if(bTotal == N) return (int)(bmn*b % (1000000000 + 7));
+            else if(bTotal < N) bln = bmn + 1;
+            else brn = bmn;
+        }
+    }
+}
