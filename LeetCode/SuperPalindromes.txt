@@ -1,0 +1,169 @@
+mport java.math.*;
+class Solution {
+    
+    /*Turns a String of numbers to an int array.*/
+    public static int[] string2arr(String n)
+    {
+        int[] retval = new int[n.length()];
+        for(int i = 0; i < retval.length; i++) retval[i] = n.charAt(i) - '0';
+        return retval;
+    }
+    
+    /*Returns the long representation of the int array*/
+    public static long arr2long(int[] arr)
+    {
+        long retval = 0;
+        for(int i = 0; i < arr.length; i++) retval = retval*10 + arr[i];
+        return retval;
+    }
+    
+    /*Returns the closest palindrome to this point
+     * Could be lower, so will repeatidly call "nextPalin" until the result is above the desired threshhold.*/
+    public int[] firstPalin(int[] arr)
+    {
+        //Checks to see if this is actually a palindrome at first
+        boolean isPalin = true;
+        for(int i = 0, j = arr.length-1; i < j; i++, j--)
+        {
+            if(arr[i] != arr[j])
+            {
+                isPalin = false;
+                break;
+            }
+        }
+        
+        //If it was, return true, otherwise prep to return the next actual palindrome
+        /*NOTE: The next actual palindrome will be the same length as this number*/
+        if(isPalin) return arr;
+        
+        int[] retval = new int[arr.length];
+        int half = retval.length/2;
+        
+        //Populate the new array to have the right side match the left side
+        for(int i = 0, j = retval.length-1; i < half; i++,j--)
+        {
+            retval[i] = arr[i];
+            retval[j] = arr[i];
+        }
+        
+        //Final add the middle (half), it was odd.
+        if(retval.length % 2 == 1) retval[half] = arr[half];
+        
+        //Return the palindrome array
+        return retval;
+    }
+    
+    /*Returns the next palindrome possible after this point*/
+    public int[] nextPalin(int[] arr)
+    {
+        //Get left and right (odd will have left and right start out as the same)
+        int mid = arr.length/2;
+        boolean even = arr.length % 2 == 0;
+        
+        int l = even ? mid - 1 : mid;
+        int r = mid;
+        
+        //First check if we have all 9's, if we do, we need to increase the array.
+        boolean allNines = true;
+        for(int i = 0; i < arr.length; i++)
+        {
+            if(arr[i] != 9)
+            {
+                allNines = false;
+                break;
+            }
+        }
+        
+        if(allNines)
+        {
+            int[] retval = new int[arr.length + 1];
+            retval[0] = 1;
+            retval[arr.length] = 1;
+            return retval;
+        }
+        else //Get the next palindrome working from the inside out.
+        {
+            while(arr[l] == 9 && arr[r] == 9)
+            {
+                arr[l] = 0;
+                arr[r] = 0;
+                l--;
+                r++;
+            }
+            arr[l] = arr[l] + 1;
+            if(l != r) arr[r] = arr[r] + 1;
+            return arr;
+        }
+        
+    }
+    
+    /*Takes a long, and checks if it's a palindrome*/
+    public boolean isPalin(long n)
+    {
+        //We know the bounds for the number, so we'll set array at length 20
+        int[] arr = new int[20];
+        int size = 0;
+        while(n != 0)
+        {
+            arr[size++] = (int)(n % 10);
+            n /= 10;
+        }
+        
+        //Now check for palindrome
+        for(int i = 0, j = size-1; i < j; i++,j--)
+        {
+            if(arr[i] != arr[j]) return false;
+        }
+        return true;
+    }
+    
+    /*Turns int to an arr of its digits*/
+    public int[] int2arr(int n)
+    {
+        ArrayList<Integer> f = new ArrayList<>();
+        while(n != 0)
+        {
+            f.add(n % 10);
+            n /= 10;
+        }
+        
+        int[] retval = new int[f.size()];
+        int j = 0;
+        for(int i = f.size()-1; i > -1; i--) retval[j++] = f.get(i);
+        return retval;
+    }
+    
+    /*Solvest the problem*/
+    public int superpalindromesInRange(String L, String R) {
+        
+        //Get stuff we need
+        int[] lowerArr = string2arr(L);
+        int[] upperArr = string2arr(R);
+        
+        long lowerLong = arr2long(lowerArr);
+        long upperLong = arr2long(upperArr);
+        
+        int squareLower = (int)Math.sqrt(lowerLong);
+        int[] squareArr = int2arr(squareLower);
+        
+        int[] palin = firstPalin(squareArr);
+        long num = arr2long(palin);
+        
+        //Get closest palindrome to lower
+        while(num*num < lowerLong)
+        {
+            palin = nextPalin(palin);
+            num = arr2long(palin);
+        }
+        
+        //Iterate in palindromes and check if squares are palindromes
+        int count = 0;
+        while(num*num <= upperLong)
+        {
+            if(isPalin(num*num)) count += 1;
+            palin = nextPalin(palin);
+            num = arr2long(palin);
+        }
+        return count;
+    }
+}
