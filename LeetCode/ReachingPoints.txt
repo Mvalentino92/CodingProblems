@@ -1,0 +1,13 @@
+class Solution {
+    public boolean reachingPoints(int sx, int sy, int tx, int ty) {
+        while(tx > sx && ty > sy)
+        {
+            if(tx > ty) tx -= tx % ty == 0 ? ty*(tx/ty) + ty : ty*(tx/ty);
+            else if(ty > tx) ty -= ty % tx == 0 ? tx*(ty/tx) + tx : tx*(ty/tx);
+            else return false;
+        }
+        if(sx == tx) return (ty - sy) % sx == 0 ? true : false;
+        if(sy == ty) return (tx - sx) % sy == 0 ? true : false;
+        return false;
+    }
+}
