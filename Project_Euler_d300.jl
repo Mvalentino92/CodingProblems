@@ -1,4 +1,3 @@
-gmx = -Inf
 function permutations(n::Int64)
 	retval = zeros(Int64,2^n,n)
 	col = 1
@@ -25,19 +24,18 @@ function getOptimal(arr::Array{Int64,1},directions::Array{Tuple{Int64,Int64},1})
 	mid = div(size(mat)[1],2) + 1	
 	mat[mid,mid] = arr[1]
 	mat[mid,mid+1] = arr[2]
-	fRetval = futureConstraint(arr)
 	extra = arr[1] == 1 && arr[2] == 1 ? 1 : 0
-	return extra + backTrack(mat,arr,3,directions,mid,mid+1,0,fRetval)
+	return extra + backTrack(mat,arr,3,directions,mid,mid+1)
 end
 
-function backTrack(mat,arr,index,directions,row,col,cBonds,fRetval)
+function backTrack(mat::Array{Int64,2},arr::Array{Int64,1},
+                   index::Int64,directions::Array{Tuple{Int64,Int64},1},
+                   row::Int64,col::Int64)
 	#Base case, if we exhausted the string, return 0 (can't add more h's)
 	if index > length(arr) return 0 end
 
 	#Initialize the max to be returned
 	mx = -Inf
-	potential = fRetval[index]
-	if cBonds + potential < gmx return -Inf end
 
 	#Iterate all directions
 	for d in directions
@@ -55,48 +53,35 @@ function backTrack(mat,arr,index,directions,row,col,cBonds,fRetval)
 			bonds += mat[row+d[1],col+d[2]-1] == 1 ? 1 : 0
 		end
 
-		futureBonds = backTrack(mat,arr,index+1,directions,row+d[1],col+d[2],cBonds + bonds,fRetval)
+		futureBonds = backTrack(mat,arr,index+1,directions,row+d[1],col+d[2])
 		mx = bonds + futureBonds > mx ? bonds + futureBonds : mx
-		global gmx = mx > gmx ? mx : gmx
 		mat[row+d[1],col+d[2]] = 0
 	end
 	return mx
 end
 
-function printMat(mat)
-	for row = 1:size(mat)[1]
-		for col = 1:size(mat)[2] 
-			mat[row,col] = mat[row,col] == -1 ? 2 : mat[row,col]
-			print(mat[row,col]," ")
-		end
-		println()
-	end
-	println()
-end
-
-function futureConstraint(arr)
-	retval = zeros(Int64,length(arr))
+function toBinary(arr::Array{Int64,1})
+	retval = 0
+	n = length(arr)
 	for i = 1:length(arr)
-		if arr[i] != 1 continue end
-		val = 0
-		for j = i-1:-2:1
-			val += arr[j] == 1 ? 1 : 0
-		end
-		retval[i] = val
-	end
-	for i = 1:length(arr)
-		retval[i] = sum(retval[i:end])
+		retval += arr[i] == -1 ? 2^(n-i) : 0
 	end
 	return retval
 end
 			
 function solve(n::Int64)
 	perm = permutations(n)
-	avg = 0
+	doThem = zeros(Int64,2^n)
 	directions = [(1,0),(0,1),(-1,0),(0,-1)]
-	for i = 1:size(perm)[1]
-		avg += getOptimal(perm[i,:],directions)
-		global gmx = -Inf
+	avg = getOptimal(perm[1,:],directions) + getOptimal(perm[end,:],directions)
+	for i = 2:2^n-1
+		if doThem[i] == -1 continue end
+		arr = perm[i,:]
+		bin = toBinary(reverse(arr))
+		doThem[bin+1] = -1
+		doThem[i] = -1
+		toAdd = getOptimal(arr,directions)
+		avg += bin + 1 == i ? toAdd : 2*toAdd
 	end
 	println(avg)
 	return avg/2^n
