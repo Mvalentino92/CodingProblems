@@ -1,0 +1,63 @@
+import java.util.Stack;
+class Solution 
+{
+    public void AND(Stack<Character> stack)
+    {
+        boolean verdict = true;
+        while(stack.peek() != '(') verdict = stack.pop() == 'f' ? false : verdict;
+        stack.pop();
+        stack.push((verdict ? 't' : 'f'));
+    }
+
+    public void OR(Stack<Character> stack)
+    {
+        boolean verdict = false;
+        while(stack.peek() != '(') verdict = stack.pop() == 't' ? true : verdict;
+        stack.pop();
+        stack.push((verdict ? 't' : 'f'));
+    }
+
+    public void NOT(Stack<Character> stack)
+    {
+        char verdict = stack.pop();
+        stack.pop();
+        stack.push((verdict == 't' ? 'f' : 't'));
+    }
+
+    public boolean parseBoolExpr(String expression) 
+    {
+        Stack<Character> operators = new Stack<>();
+        Stack<Character> booleans = new Stack<>();
+        
+        //boolean must either be first or second slot
+        int index = 0;
+        char s = expression.charAt(index++);
+        if(s == '&' || s == '|' || s == '!')
+        {
+            operators.push(s);
+            booleans.push(expression.charAt(index++));
+        }
+        else booleans.push(s);
+        
+        //If the stack ever has 1 element left, and we've exhausted the string stop
+        while(booleans.size() > 1 || operators.size() > 0)
+        {
+            char c = expression.charAt(index++);
+            if(c == ',') continue;
+            if(c == '(') booleans.push(c);
+            else if(c == 't') booleans.push(c);
+            else if(c == 'f') booleans.push(c);
+            else if(c == '!') operators.push(c);
+            else if(c == '&') operators.push(c);
+            else if(c == '|') operators.push(c);
+            else
+            {
+                char op = operators.pop();
+                if(op == '!') NOT(booleans);
+                else if(op == '&') AND(booleans);
+                else OR(booleans);
+            }
+        }
+        return booleans.pop() == 't' ? true : false;
+    }
+}
