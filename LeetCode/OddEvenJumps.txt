@@ -1,80 +1,35 @@
+import java.util.TreeMap;
 class Jump
 {
-    int val = 0;
-    int odd = 0;
-    int even = 0;
+    int odd = 1;
+    int even = 1;
     public Jump(){};
 }
 
 class Solution 
 {
-    public int oddEvenJumps(int[] A) 
-    {
-        //Jump stuff
-        int len = A.length;
-        Jump[] jumps = new Jump[len--];
-        jumps[len] = new Jump();
-        jumps[len].odd = 1;
-        jumps[len].even = 1;
-        jumps[len].val = A[len];
+    public int oddEvenJumps(int[] A)  
+    {   
 
-        //Min, Max and retval
+        //Initialize TreeMap with first element
+        TreeMap<Integer,Jump> tree = new TreeMap<>();
+        tree.put(A[A.length-1],new Jump());
         int retval = 1;
-        
+    
         //Begin to iterate and find solution
-        for(int i = len - 1; i > -1; i--)
+        for(int i = A.length - 2; i > -1; i--)
         {
-            //Make new jump
-            Jump jump = new Jump();
-            jump.val = A[i];
-            
-            //Find verdict for odd
-            int minDex = -1;
-            for(int j = i + 1; j < jumps.length; j++)
-            {
-                if(jumps[j].val >= A[i])
-                {
-                    minDex = j;
-                    break;
-                }
-            }
-            if(minDex != -1)
-            {
-                jump.odd = jumps[minDex].even == 1 ? 1 : 0;
+                //Find the ceil and floor element
+                Jump jump = new Jump();
+                Integer ceil = tree.ceilingKey(A[i]);
+                Integer floor = tree.floorKey(A[i]);
+                jump.odd = (ceil != null && ceil >= A[i]) ? tree.get(ceil).even : 0;
+                jump.even = (floor != null && floor <= A[i]) ? tree.get(floor).odd : 0;
+
+                //Update retval and add this element
                 retval += jump.odd;
-            }
-            
-            int maxDex = -1;
-            int start = minDex > -1 ? minDex : len;
-            for(int j = start; j > i; j--)
-            {
-                if(jumps[j].val <= A[i])
-                {
-                    maxDex = j;
-                    break;
-                }
-            }
-            while(maxDex - 1 > i && jumps[maxDex-1].val == jumps[maxDex].val) maxDex--;
-            if(maxDex != -1)
-            {
-                jump.even = jumps[maxDex].odd == 1 ? 1 : 0;
-            }
-            
-            //Insertion sort
-            int j = len;
-            while(j > i)
-            {
-                if(jump.val <= jumps[j].val) j--;
-                else break;
-            }
-            int k = i;
-            while(k < j) 
-            {
-                jumps[k] = jumps[k+1];
-                k++;
-            }
-            jumps[j] = jump;
+                tree.put(A[i],jump);
         }
         return retval;
-    }
+    }   
 }
