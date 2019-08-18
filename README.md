@@ -16,9 +16,9 @@ It is hard for me to say what I was wrong about, as parts of the algorithm were 
 **PE484_Attempt.java:** An attempt at Project Euler problem 484 (which is ranked at 100% difficulty). The problems demands that you find the GCD of a number and it's arithmetic derivative. The algorithm I use bypasses the need to even calculate the arithmetic derivative of the numbers, thereby removing the need to calculate the GCD the conventional way as well. I do calculate the GCD by only using the original numbers prime factors. Since I need only need the prime factors of the numbers, it is more efficient to generate all the possible prime factor combinations that are possible below the threshold, then to iterate every number and calculate its prime factors. Doing it this way also allows me to automatically skip finding primes past half of the threshold as well.
 
 # LeetCode
-Only doing the Hard problems. I wanted practice solving these types of problems.
+Combination of easy, medium and hard problems.
 
-## Problems Solved: 21
+## Problems Solved: 58
 
 ## Notable Attempts:
 
