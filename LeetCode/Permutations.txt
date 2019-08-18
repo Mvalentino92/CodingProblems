@@ -1,0 +1,47 @@
+class Solution {
+    public int[] cutout(int[] list, int target)
+    {
+        int[] retval = new int[list.length-1];
+        int j = 0;
+        for(int i = 0; i < list.length; i++)
+        {
+            if(list[i] != target) retval[j++] = list[i];
+        }
+        return retval;
+    }
+    
+    public List<List<Integer>> permute(int[] nums) 
+    {
+        List<List<Integer>> retval = new LinkedList<>();
+        if(nums.length == 1) 
+        {
+            List<Integer> inner = new LinkedList<>();
+            inner.add(nums[0]);
+            retval.add(inner);
+        }
+        else if(nums.length == 2)
+        {
+            List<Integer> inner1 = new LinkedList<Integer>();
+            inner1.add(nums[0]);
+            inner1.add(nums[1]);
+            List<Integer> inner2 = new LinkedList<Integer>();
+            inner2.add(nums[1]);
+            inner2.add(nums[0]);
+            retval.add(inner1);
+            retval.add(inner2);
+        }
+        else
+        {
+            for(int i = 0; i < nums.length; i++)
+            {
+                List<List<Integer>> future = permute(cutout(nums,nums[i]));
+                for(List<Integer> list : future)
+                {
+                    ((LinkedList)list).addFirst(nums[i]);
+                }
+                retval.addAll(future);
+            }
+        }
+        return retval;
+    }
+}

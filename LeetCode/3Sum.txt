@@ -1,0 +1,131 @@
+import java.util.*;
+class Solution
+{
+   public List<List<Integer>> threeSum(int[] nums)
+   {
+        int N = 3;
+        int target = 0;
+        int current = 0;
+        //Create HashMap, and populate it with occurrences of each value
+        HashMap<Integer,Integer> hm = new HashMap<>();
+        for(int i = 0; i < nums.length; i++)
+        {
+            Integer val = hm.get(nums[i]);
+            if(val != null) hm.replace(nums[i],val + 1); 
+            else hm.put(nums[i],1);
+        }
+
+        //Get a sorted list of the keys.
+        Integer[] sorted = hm.keySet().toArray(new Integer[0]);
+        Arrays.sort(sorted);
+
+        //Create the two LinkedLists, to be passed recursively.
+        List<List<Integer>> retval = new LinkedList<>();
+        List<Integer> retElem = new LinkedList<>();
+        //Call the recursive method, and supply it what it needs.
+        solver(N,current,target,0,hm,sorted,retval,retElem);
+        return retval;
+   }   
+    
+    
+   public static List<Integer> deepClone(List<Integer> arr)
+   {
+        List<Integer> retval = new LinkedList<>();
+        for(Integer elem : arr) retval.add(elem);
+        return retval;
+   }
+    
+    public static void solver(int N, int current, int target, int s, HashMap<Integer,Integer> hm,
+                      Integer[] sorted, List<List<Integer>> retval, List<Integer> retElem)
+    {
+        /*Three base cases for 0sum 1sum and 2sum*/
+        //0sum
+        if (N == 0)
+        {
+                
+                if(current == target) retval.add(deepClone(retElem));
+                return;
+        }
+
+        //1sum
+        if (N == 1)
+        {
+                while (s < sorted.length && current + sorted[s] <= target)
+                {
+                        if(current + sorted[s] == target)
+                        {
+                                List<Integer> toAdd = deepClone(retElem);
+                                toAdd.add(sorted[s]);
+                                retval.add(toAdd);
+                                break;
+                        }
+                        s++;
+                }
+                return;
+        }
+
+
+          //2sum
+        if(N == 2)
+        {
+                int s2 = s;
+                int t = sorted.length - 1;
+                while(s < t)
+                {
+                        int val = current + sorted[s] + sorted[t];
+                        if(val == target)
+                        {
+                                List<Integer> toAdd = deepClone(retElem);
+                                toAdd.add(sorted[s]);
+                                toAdd.add(sorted[t]);
+                                retval.add(toAdd);
+                                s++;
+                                t--;
+                        }
+                        else if(val < target) s++;
+                        else t--;
+                }
+                while (s2 < sorted.length && current + sorted[s2] <= target)
+                {
+                        if(current + sorted[s2]*2 == target && hm.get(sorted[s2]) >= 2)
+                        {
+                                List<Integer> toAdd = deepClone(retElem);
+                                toAdd.add(sorted[s2]);
+                                toAdd.add(sorted[s2]);
+                                retval.add(toAdd);
+                                break;
+                        }
+                        s2++;
+                }
+                return;
+        }
+
+        //The meat
+        int t = sorted.length;
+        int i = s;
+        while(i < t)
+        {
+                if(sorted[i]*N > target)
+                {
+                        t = i;
+                        break;
+                }
+                i++;
+        }
+        System.out.println("Length of sorted: "+sorted.length+
+                          "s is: "+s+" t is: "+t);
+           //Recursive calls
+        for(s = s; s < t; s++)
+        {
+                //How many can we call? Depends on how many duplicates there are.
+                int j = Math.min(hm.get(sorted[s]),N);
+                for(i = 1; i <= j; i++)
+                {
+                        System.out.println(i);
+                        retElem.add(sorted[s]);
+                        solver(N-i,current + sorted[s]*i,target,s+1,hm,sorted,retval,retElem);
+                }
+                for(i = 1; i <= j; i++) ((LinkedList)retElem).removeLast();
+        }
+   }
+}

@@ -1,0 +1,31 @@
+class Solution
+{
+    public int robhelper(int[] arr, int s, int t) 
+    {
+                if(t < s) return 0;
+                if(s == t) return arr[s];
+                if(t - 1 == s) return Math.max(arr[s],arr[t]);
+
+                int[] sol = new int[t - s + 1];
+                sol[0] = arr[s];
+                sol[1] = arr[s+1];
+                sol[2] = arr[s] + arr[s+2];
+                for(int i = s + 3; i < t + 1; i++) 
+                        sol[i-s] = Math.max(sol[i-2-s],sol[i-3-s]) + arr[i];
+                return Math.max(sol[sol.length-1],sol[sol.length-2]);
+
+    }
+    
+    public int rob(int[] nums)
+    {
+        int l = nums.length;
+        if(l == 0) return 0;
+        if(l == 1) return nums[0];
+        if(l == 2) return Math.max(nums[0],nums[1]);
+        if(l == 3) return Math.max(Math.max(nums[0],nums[1]),nums[2]);
+        int left = nums[0] + robhelper(nums,2,l-2);
+        int right = nums[l-1] + robhelper(nums,1,l-3);
+        int mid = robhelper(nums,1,l-2);
+        return Math.max(Math.max(left,right),mid);
+    }
+}

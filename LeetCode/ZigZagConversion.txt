@@ -1,0 +1,57 @@
+class Solution {
+    public int matlength(int length, int rows)
+    {
+        int count = 0;
+        while(true)
+        {
+            count++;
+            length -= rows;
+            if(length <= 0) return count;
+            for(int i = 1; i < rows-1; i++)
+            {
+                count++;
+                length -= 1;
+                if(length<=0) return count;
+            }
+        }
+    }
+    public String convert(String s, int numRows) 
+    {
+        if(numRows == 1) return s;
+        char[][] mat = new char[numRows][matlength(s.length(),numRows)];
+        int index = 0;
+        int row = 0;
+        int col = 0;
+        while(index < s.length())
+        {
+            //Go down as much as you can
+            int spaces = s.length() - index;
+            for(int i = 0; i < spaces && i < numRows; i++)
+            {
+                mat[row][col] = s.charAt(index);
+                row++;
+                index++;
+            }
+            row -= 2;
+            col++;
+            //Go diagonal
+            spaces = s.length() - index;
+            for(int i = 0; i < spaces && i < (numRows - 2); i++)
+            {
+                mat[row][col] = s.charAt(index);
+                row--;
+                col++;
+                index++;
+            }
+        }
+        String retval = "";
+        for(int i = 0; i < mat.length; i++)
+        {
+            for(int j = 0; j < mat[i].length; j++) 
+            {
+                if(mat[i][j] != 0) retval += mat[i][j];
+            }
+        }
+        return retval;
+    }
+}

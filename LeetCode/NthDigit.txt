@@ -1,0 +1,47 @@
+class Solution {
+    public int findNthDigit(int n) {
+        //Base case
+                if(n < 10) return n;
+
+                //Find within what digit domain the answer lies
+                int digit = 2;
+                long stride = 10;
+                long p = 90;
+                long total = 9;
+                while(n > total)
+                {
+                        total += p*digit;
+                        p *= 10;
+                        digit += 1;
+                        stride *= 10;
+                }
+                digit -= 1;
+                p /= 10;
+                stride /= 10;
+                total -= p*digit;
+                
+
+                //Begin to iterate and hone in on number which slutiion digit is ocntained
+                int number = (int)stride;
+                for(int d = 0; d < digit; d++)
+                {
+                        while(n > total)
+                        {
+                                total += stride*digit;
+                                number += stride;
+                        }
+                        total -= stride*digit;
+                        number -= stride;
+                        stride /= 10;
+                }
+        
+                //Turn the number to a list, and return the digit
+                int[] digits = new int[digit];
+                for(int i = 0; i < digit; i++)
+                {
+                        digits[i] = number % 10;
+                        number /= 10;
+                }
+                return digits[digit - n + (int)total];
+    }
+}

@@ -1,0 +1,44 @@
+class Solution 
+{
+    public int countArrangement(int N) 
+    {
+        int[][] matrix = new int[N][N];
+        for(int i = 1; i <= N; i++)
+        {
+            for(int j = 1; j <= N; j++)
+            {
+                if(i % j == 0 || j % i == 0) matrix[i-1][j-1] = 1;
+            }
+        }
+        
+        return solver(matrix,0);
+    }
+    
+    public int solver(int[][] matrix,int row)
+    {
+        if(row == matrix.length) return 1;
+        int count = 0;
+        for(int col = 0; col < matrix[row].length; col++)
+        {
+            if(matrix[row][col] == 1)
+            {
+                boolean verdict = true;
+                for(int i = row - 1; i > -1; i--)
+                {
+                    if(matrix[i][col] == -1)
+                    {
+                        verdict = false;
+                        break;
+                    }
+                }
+                if(verdict)
+                {
+                    matrix[row][col] *= -1;
+                    count += solver(matrix,row+1);
+                    matrix[row][col] *= -1;
+                }
+            }
+        }
+        return count;
+    }
+}

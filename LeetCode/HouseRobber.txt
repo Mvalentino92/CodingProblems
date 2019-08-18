@@ -1,0 +1,22 @@
+class Solution 
+{
+    public int rob(int[] arr)
+    {
+        return robhelper(arr,0,arr.length-1);
+    }
+    public int robhelper(int[] arr, int s, int t) 
+    {
+                if(t < s) return 0;
+                if(s == t) return arr[s];
+                if(t - 1 == s) return Math.max(arr[s],arr[t]);
+
+                int[] sol = new int[arr.length];
+                sol[0] = arr[s];
+                sol[1] = arr[s+1];
+                sol[2] = arr[s] + arr[s+2];
+                for(int i = s + 3; i < t + 1; i++) 
+                        sol[i] = Math.max(sol[i-2],sol[i-3]) + arr[i];
+                return Math.max(sol[sol.length-1],sol[sol.length-2]);
+
+    }
+}

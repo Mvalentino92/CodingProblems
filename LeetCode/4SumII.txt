@@ -1,0 +1,76 @@
+import java.util.*;
+class Solution 
+{
+    public static int count = 0;
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) 
+    {
+        if(A.length == 0) return 0;
+        //Create the matrix with sorted rows.
+        int[][] matrix = new int[3][A.length];
+        Arrays.sort(A); Arrays.sort(B);
+        matrix[0] = A;
+        matrix[1] = B;
+        HashMap<Integer,Integer> hm = new HashMap<>();
+        int minC = C[0];
+        int maxC = C[0];
+        int minD = D[0];
+        int maxD = D[0];
+        for(int i = 0; i < C.length; i++)
+        {
+            minC = C[i] < minC ? C[i] : minC;
+            maxC = C[i] > maxC ? C[i] : maxC;
+            minD = D[i] < minD ? D[i] : minD;
+            maxD = D[i] > maxD ? D[i] : maxD;
+            for(int j = 0; j < D.length; j++)
+            {
+                Integer val = hm.get(C[i]+D[j]);
+                if(val != null) hm.replace(C[i] + D[j],val+1);
+                else hm.put(C[i] + D[j],1);
+            }
+        }
+        matrix[2] = new int[A.length];
+        matrix[2][0] = minC + minD;
+        matrix[2][A.length-1] = maxC + maxD;
+        
+        //Back tracking algorithm.
+        backtrack(matrix,0,0,hm,1);
+        int retval = count;
+        count = 0;
+        return retval;
+    }
+    
+    public static void backtrack(int[][] matrix, int row, int current,HashMap<Integer,Integer> hm,int mult)
+    {
+        //Base case. If used all rows, check if current equals 0
+        if(row == 2)
+        {
+            Integer toAdd = hm.get(-current);
+            count += toAdd != null ? toAdd*mult : 0;
+            return;
+        }
+        int minTotal = 0;
+        int maxTotal = 0;
+        for(int i = row+1; i < matrix.length; i++) 
+        {
+            minTotal += matrix[i][0];
+            maxTotal += matrix[i][matrix[i].length-1];
+        }
+        for(int i = 0; i < matrix[row].length; i++)
+        {   
+            int val = current + matrix[row][i];
+            if(val + minTotal > 0) return;
+            if(val + maxTotal < 0) continue;
+            int addMult = 1;
+            for(int j = i + 1; j < matrix[row].length; j++)
+            {
+                if(matrix[row][j] == matrix[row][i])
+                {
+                    addMult++;
+                    i++;
+                }
+                else break;
+            }
+            backtrack(matrix,row+1,val,hm,mult*addMult);
+        }
+    }
+}

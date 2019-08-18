@@ -1,0 +1,23 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution 
+{
+    public int robhelper(TreeNode root, boolean take)
+    {
+        if(root == null) return 0;
+        if(take) return root.val + robhelper(root.left,false) + robhelper(root.right,false);
+        else return rob(root.left) + rob(root.right);
+    }
+    public int rob(TreeNode root) 
+    {
+        if(root == null) return 0;
+        return Math.max(robhelper(root,true),robhelper(root,false));
+    }
+}

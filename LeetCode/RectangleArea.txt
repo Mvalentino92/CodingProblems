@@ -1,0 +1,48 @@
+class Solution 
+{
+        public static int[] indexSort(int[] arr)
+        {   
+                int[] retval = new int[arr.length];
+                for(int i = 0; i < retval.length; i++) retval[i] = i;
+                for(int i = 0; i < arr.length - 1; i++)
+                {   
+                        int min = arr[i];
+                        int minDex = i;
+                        for(int j = i + 1; j < arr.length; j++)
+                        {   
+                                if(arr[j] < min)
+                                {   
+                                        min = arr[j];
+                                        minDex = j;
+                                }   
+                        }   
+                        int temp = arr[i];
+                        arr[i] = min;
+                        arr[minDex] = temp;
+
+                        temp = retval[i];
+                        retval[i] = retval[minDex];
+                        retval[minDex] = temp;
+                }   
+                return retval;
+        }   
+
+        public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) 
+        {
+            int[] arrX = {A,C,E,G};
+            int[] arrY = {B,D,F,H};
+            int c1 = (arrX[1] - arrX[0])*(arrY[1]-arrY[0]);
+            int c2 = (arrX[3] - arrX[2])*(arrY[3]-arrY[2]);
+            
+            int[] indicesX = indexSort(arrX);
+            int[] indicesY = indexSort(arrY);
+            
+            int[] s = {0,1,2,3};
+            int[] t = {2,3,0,1};
+            int overlapX = Arrays.equals(indicesX,s) || Arrays.equals(indicesX,t) ? 0 : arrX[2] - arrX[1];
+            int overlapY = Arrays.equals(indicesY,s) || Arrays.equals(indicesY,t) ? 0 : arrY[2] - arrY[1];
+            
+            return c1 + c2 - overlapX*overlapY;
+            
+        }
+}

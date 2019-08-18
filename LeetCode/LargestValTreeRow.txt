@@ -1,0 +1,44 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    //Helper function
+     public List<Integer> largestValues(TreeNode root) 
+     {
+        //Declare return Array
+        List<Integer> retval = new ArrayList();
+        
+        //Call recursive method that actually solves it
+        findSol(root, 0, retval);
+        return retval;
+     }
+    
+    private void findSol(TreeNode root, int treeHeight, List<Integer> retval)
+    {
+        //If were at a leaf, return
+        if(root == null) return;
+        
+        //If were at a new depth that hasnt been explored yet, add this number.
+        if(treeHeight == retval.size())
+        {
+            retval.add(root.val);
+        }
+        //Otherwise, see if this value is greater than current max for this depth
+        else
+        {
+            if(root.val > retval.get(treeHeight))
+            {
+                retval.set(treeHeight, root.val);
+            }
+        }
+        //Recursively call left and right children while incrementing height.
+        findSol(root.left, treeHeight+1, retval);
+        findSol(root.right, treeHeight+1, retval);
+    }
+}

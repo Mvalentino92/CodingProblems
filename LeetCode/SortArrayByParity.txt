@@ -1,0 +1,20 @@
+class Solution {
+    public int[] sortArrayByParity(int[] A) {
+        
+        //Init return array
+        int[] retval = new int[A.length];
+        
+        //Init index value
+        int evenIndex = 0;
+        int oddIndex = A.length-1;
+        
+        //Grab the evens
+        for(int i = 0; i < A.length; i++)
+        {
+            if(A[i] % 2 == 0) retval[evenIndex++] = A[i];
+            else retval[oddIndex--] = A[i];
+        }
+        return retval;
+            
+    }
+}
