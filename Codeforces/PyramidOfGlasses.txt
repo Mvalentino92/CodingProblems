@@ -1,0 +1,55 @@
+import java.util.Scanner;
+public class mao
+{
+	public static int pour(double liquid,double[][] glasses,int row,int col)
+	{
+		if(liquid == 0 || row == glasses.length) return 0;
+		if(glasses[row][col] == 1)
+		{
+			return pour(liquid/2,glasses,row+1,col) + pour(liquid/2,glasses,row+1,col+1);
+		}
+ 
+		glasses[row][col] += liquid;
+		if(glasses[row][col] >= 1)
+		{
+			double overflow = glasses[row][col] - 1;
+			glasses[row][col] = 1;
+			return 1 + pour(overflow/2,glasses,row+1,col) + pour(overflow/2,glasses,row+1,col+1);
+		}
+		return 0;
+	}
+ 
+	public static void solve()
+	{
+		Scanner input = new Scanner(System.in);
+		int n = input.nextInt();
+		int t = input.nextInt();
+ 
+		if(t >= Math.pow(2,n) - 1)
+		{
+			System.out.println((n*n + n)/2);
+			return;
+		}
+		
+		if(t <= 1)
+		{
+			System.out.println(t);
+			return;
+		}
+ 
+		int retval = 0;
+		double[][] glasses = new double[n][];
+		for(int i = 0; i < n; i++) glasses[i] = new double[i+1];
+		for(int time = t; time > 0; time--)
+		{
+			retval += pour(1.0,glasses,0,0);
+		}
+		System.out.println(retval);
+	}
+	
+	public static void main(String[] args)
+	{
+		solve();
+	}
+	
+}

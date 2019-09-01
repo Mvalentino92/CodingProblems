@@ -1,0 +1,41 @@
+import java.util.Scanner;
+public class fst
+{
+	public static void main(String[] args)
+	{
+		Scanner input = new Scanner(System.in);
+		int n = input.nextInt();
+		if(n <= 2)
+		{
+			System.out.println(n);
+		}
+		else
+		{
+			int retval = 2;
+			int xa = input.nextInt();
+			int ha = input.nextInt();
+			int xb = input.nextInt();
+			int hb = input.nextInt();
+			int xc = 0;
+			int hc = 0;
+ 
+			for(int i = 0; i < n - 2; i++)
+			{
+				xc = input.nextInt();
+				hc = input.nextInt();
+ 
+				if(hb < xb - xa) retval++;
+				else if(hb < xc - xb)
+				{
+					retval++;
+					xb += hb;
+				}
+				xa = xb;
+				ha = hb;
+				xb = xc;
+				hb = hc;
+			}
+			System.out.println(retval);
+		}
+	}
+}

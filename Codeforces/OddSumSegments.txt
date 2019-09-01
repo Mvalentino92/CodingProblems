@@ -1,0 +1,59 @@
+import java.util.Scanner;
+public class prob
+{
+	public static void main(String[] args)
+	{
+		Scanner input = new Scanner(System.in);
+		int q = input.nextInt();
+		
+		for(int r = 0; r < q; r++)
+		{
+			int n = input.nextInt();
+			int k = input.nextInt();
+ 
+			if(n == 1 && k  == 1)
+			{
+				if((input.nextInt() & 1) == 1)
+				{
+					System.out.println("YES\n1");
+				}
+				else System.out.println("NO");
+				continue;
+			}
+ 
+			int[] arr = new int[n];
+			int[] bins = new int[k];
+ 
+			int odd = 0;
+			for(int i = 0; i < n; i++)
+			{
+				arr[i] = input.nextInt() & 1;
+				odd += arr[i];
+			}
+ 
+			if(((odd ^ k) & 1) == 1 || odd < k)
+			{
+				System.out.println("NO");
+				continue;
+			}
+			
+			System.out.println("YES");
+ 
+			int dump = odd/k;
+			if((dump & 1) != 1) dump -= 1;
+			for(int i = 0; i < k; i++) bins[i] += dump;
+ 
+			int rem = odd - dump*k;
+			for(int i = 0; i < rem/2; i++) bins[i] += 2;
+ 
+			int index = 0;
+			for(int i = 0; i < k - 1; i++)
+			{
+				int target = bins[i];
+				while(target > 0) target -= arr[index++];
+				System.out.print(index+" ");
+			}
+			System.out.println(n);
+		}
+	}
+}
